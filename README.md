@@ -1,7 +1,7 @@
 # Nectar App
 
-Họ và tên: Nguyễn Hoàng Dũng 
-MSSV: 23810310338  
+Họ và tên: Vũ Tiến Mạnh
+MSSV: 23810310375
 
 ## Screens da hoan thanh
 
