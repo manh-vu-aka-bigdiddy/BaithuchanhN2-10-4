@@ -48,7 +48,7 @@ function CartRow({ item, onDecrease, onIncrease, onRemove }) {
 
         <View style={styles.foot}>
           <QuantityControl quantity={item.quantity} onDecrease={onDecrease} onIncrease={onIncrease} />
-          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.price}>${(item.price * item.quantity).toFixed(2)}</Text>
         </View>
       </View>
     </View>

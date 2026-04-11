@@ -24,9 +24,11 @@ const ACCOUNT_ITEMS = [
   { icon: 'alert-circle-outline', label: 'About' },
 ];
 
-function AccountRow({ icon, label, showDivider = true }) {
+function AccountRow({ icon, label, showDivider = true, onPress }) {
+  const Container = onPress ? Pressable : View;
+
   return (
-    <View style={styles.rowWrap}>
+    <Container style={styles.rowWrap} onPress={onPress}>
       <View style={styles.row}>
         <View style={styles.rowLeading}>
           <Ionicons name={icon} size={scale(26)} color={nectarTheme.text} />
@@ -37,11 +39,11 @@ function AccountRow({ icon, label, showDivider = true }) {
       </View>
 
       {showDivider ? <View style={styles.rowDivider} /> : null}
-    </View>
+    </Container>
   );
 }
 
-export default function AccountScreen({ profileName, profileEmail }) {
+export default function AccountScreen({ profileName, profileEmail, onLogout, onOrdersPress, orders }) {
   return (
     <View style={styles.screen}>
       <PhoneStatusBar />
@@ -70,10 +72,11 @@ export default function AccountScreen({ profileName, profileEmail }) {
             icon={item.icon}
             label={item.label}
             showDivider={index !== ACCOUNT_ITEMS.length - 1}
+            onPress={item.label === 'Orders' ? onOrdersPress : undefined}
           />
         ))}
 
-        <Pressable style={styles.logoutButton}>
+        <Pressable style={styles.logoutButton} onPress={onLogout}>
           <Ionicons name="log-out-outline" size={scale(28)} color={nectarTheme.green} />
           <Text style={styles.logoutText}>Log Out</Text>
         </Pressable>
@@ -170,5 +173,41 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: nectarTheme.green,
     marginRight: scale(22),
+  },
+  ordersSection: {
+    paddingHorizontal: scale(24),
+    marginBottom: scale(20),
+  },
+  sectionTitle: {
+    fontSize: scale(20),
+    fontWeight: '600',
+    color: nectarTheme.text,
+    marginBottom: scale(12),
+  },
+  noOrdersText: {
+    fontSize: scale(16),
+    color: nectarTheme.textSecondary,
+    textAlign: 'center',
+    marginTop: scale(20),
+  },
+  orderItem: {
+    backgroundColor: '#F8F8F8',
+    padding: scale(16),
+    borderRadius: scale(8),
+    marginBottom: scale(8),
+  },
+  orderDate: {
+    fontSize: scale(14),
+    color: nectarTheme.textSecondary,
+  },
+  orderTotal: {
+    fontSize: scale(18),
+    fontWeight: '600',
+    color: nectarTheme.primary,
+    marginTop: scale(4),
+  },
+  orderItems: {
+    fontSize: scale(14),
+    color: nectarTheme.textSecondary,
   },
 });

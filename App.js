@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
-import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useMemo, useState } from 'react';
+import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import BottomTabBar from './src/components/BottomTabBar';
@@ -22,9 +22,12 @@ import ExploreScreen from './src/screens/ExploreScreen';
 import FavouriteScreen from './src/screens/FavouriteScreen';
 import FilterScreen from './src/screens/FilterScreen';
 import HomeScreen from './src/screens/HomeScreen';
+import LoginScreen from './src/screens/LoginScreen';
 import OrderAcceptedScreen from './src/screens/OrderAcceptedScreen';
 import ProductDetailScreen from './src/screens/ProductDetailScreen';
 import SearchScreen from './src/screens/SearchScreen';
+import OrdersScreen from './src/screens/OrdersScreen';
+import { addOrder, getCart, getOrders, getUser, removeUser, saveCart, saveUser } from './src/services/storageService';
 import { isWebPreview, scale } from './src/utils/layout';
 
 function createHomeRoute() {
@@ -261,6 +264,47 @@ function AppContent() {
     }))
   );
   const [favoriteIds, setFavoriteIds] = useState(defaultFavoriteIds);
+  const [user, setUser] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [accountView, setAccountView] = useState('profile');
+  const [isReady, setIsReady] = useState(false);
+
+  // Load data from AsyncStorage on app start
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const savedUser = await getUser();
+        if (savedUser) {
+          setUser(savedUser);
+          setIsLoggedIn(true);
+        }
+        const savedCart = await getCart();
+        if (savedCart.length > 0) {
+          setCartItems(savedCart);
+        }
+        const savedOrders = await getOrders();
+        setOrders(savedOrders);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setIsReady(true);
+      }
+    };
+    loadData();
+  }, []);
+
+  // Save cart to AsyncStorage whenever cartItems change
+  useEffect(() => {
+    const saveCartData = async () => {
+      try {
+        await saveCart(cartItems);
+      } catch (error) {
+        console.error('Error saving cart:', error);
+      }
+    };
+    saveCartData();
+  }, [cartItems]);
 
   const shopRoute = shopStack[shopStack.length - 1] ?? createHomeRoute();
   const exploreRoute = exploreStack[exploreStack.length - 1] ?? createExploreRoute();
@@ -412,10 +456,59 @@ function AppContent() {
     if (nextTab === 'explore') {
       setExploreStack([createExploreRoute()]);
     }
+
+    if (nextTab !== 'account') {
+      setAccountView('profile');
+    }
   };
 
-  const handlePlaceOrder = () => {
-    setOverlay('orderAccepted');
+  const handleLogin = async (userData) => {
+    try {
+      await saveUser(userData);
+      setUser(userData);
+      setIsLoggedIn(true);
+    } catch (error) {
+      console.error('Error saving user:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await removeUser();
+      setUser(null);
+      setIsLoggedIn(false);
+      setAccountView('profile');
+      // Reset to home
+      resetToHome();
+    } catch (error) {
+      console.error('Error removing user:', error);
+    }
+  };
+
+  const openOrders = () => {
+    setAccountView('orders');
+  };
+
+  const closeOrders = () => {
+    setAccountView('profile');
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      const order = {
+        id: Date.now().toString(),
+        items: cartItems,
+        total: total,
+        date: new Date().toISOString(),
+      };
+      await addOrder(order);
+      setOrders(prev => [...prev, order]);
+      setCartItems([]); // Clear cart after order
+      setOverlay('orderAccepted');
+    } catch (error) {
+      console.error('Error placing order:', error);
+      setOverlay('error');
+    }
   };
 
   const renderShopScreen = () => {
@@ -529,10 +622,33 @@ function AppContent() {
       );
     }
 
+    if (activeTab === 'account') {
+      if (!isLoggedIn) {
+        return <LoginScreen onLogin={handleLogin} />;
+      }
+
+      if (accountView === 'orders') {
+        return <OrdersScreen orders={orders} onBack={closeOrders} />;
+      }
+
+      return (
+        <AccountScreen
+          profileName={user?.name || "Afsar Hossen"}
+          profileEmail={user?.email || "lmshuvo97@gmail.com"}
+          onLogout={handleLogout}
+          onOrdersPress={openOrders}
+          orders={orders}
+        />
+      );
+    }
+
     return (
       <AccountScreen
-        profileName="Afsar Hossen"
-        profileEmail="lmshuvo97@gmail.com"
+        profileName={user?.name || "Afsar Hossen"}
+        profileEmail={user?.email || "lmshuvo97@gmail.com"}
+        onLogout={handleLogout}
+        onOrdersPress={openOrders}
+        orders={orders}
       />
     );
   };
@@ -541,6 +657,22 @@ function AppContent() {
     activeTab === 'shop' ? shopRoute.name : activeTab === 'explore' ? exploreRoute.name : activeTab;
   const showOrderAccepted = overlay === 'orderAccepted';
   const showTabBar = !showOrderAccepted && !['ProductDetail', 'Filter'].includes(currentRouteName);
+
+  if (!isReady) {
+    return null;
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <View style={styles.shell}>
+        <StatusBar style="dark" translucent={!isWebPreview} />
+
+        <View style={styles.phoneFrame}>
+          <LoginScreen onLogin={handleLogin} />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.shell}>
