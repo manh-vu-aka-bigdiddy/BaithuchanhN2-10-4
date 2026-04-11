@@ -58,8 +58,10 @@ w
 
 <img width="1882" height="1016" alt="23810310375-vu-tien-manh-logout2" src="https://github.com/user-attachments/assets/310fff25-4072-4500-af33-067eaa8e4119" />
 
-#video demo sp 
-[23810310375-vu-tien-manh-demovideo.zip](https://github.com/user-attachments/files/26643782/23810310375-vu-tien-manh-demovideo.zip)
+##  Demo Video
+Video mô tả các chức năng chính của ứng dụng:
+
+ [Xem video tại đây](https://drive.google.com/file/d/1KUMUGkaIpPEQ_zrd5VZpSNbWBD53bo7v/view?usp=sharing)
 
 
 #tra loi cau hoi 
