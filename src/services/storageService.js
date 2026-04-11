@@ -58,7 +58,14 @@ export const getUser = async () => {
   }
 };
 
-
+export const removeUser = async () => {
+  try {
+    await storage.removeItem(STORAGE_KEYS.USER);
+  } catch (e) {
+    console.error('Error removing user:', e);
+    throw e;
+  }
+};
 
 // Cart Management
 export const saveCart = async (cart) => {
