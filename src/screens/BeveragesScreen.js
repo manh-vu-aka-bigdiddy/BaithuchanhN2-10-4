@@ -1,4 +1,5 @@
-import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 import {
   FlatList,
   SafeAreaView,
@@ -7,12 +8,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
 
-import ProductCard from '../components/ProductCard';
-import { beverages, nectarTheme } from '../data/nectarData';
-import { scale } from '../utils/layout';
+
 
 export default function BeveragesScreen({
   onBack,
