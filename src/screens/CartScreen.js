@@ -55,14 +55,7 @@ function CartRow({ item, onDecrease, onIncrease, onRemove }) {
   );
 }
 
-export default function CartScreen({
-  items,
-  total,
-  onDecrease,
-  onIncrease,
-  onRemove,
-  onCheckout,
-}) {
+
   return (
     <View style={styles.screen}>
       <PhoneStatusBar />
