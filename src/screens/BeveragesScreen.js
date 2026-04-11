@@ -20,22 +20,7 @@ export default function BeveragesScreen({
   onOpenSearch,
 }) {
   return (
-    <SafeAreaView style={styles.screen}>
-      <StatusBar style="dark" />
-
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity activeOpacity={0.85} onPress={onBack}>
-            <Ionicons name="chevron-back" size={scale(28)} color={nectarTheme.text} />
-          </TouchableOpacity>
-
-          <Text style={styles.title}>Beverages</Text>
-
-          <TouchableOpacity activeOpacity={0.85} onPress={onOpenSearch}>
-            <Ionicons name="options-outline" size={scale(24)} color={nectarTheme.text} />
-          </TouchableOpacity>
-        </View>
-
+   
         <FlatList
           data={beverages}
           numColumns={2}
