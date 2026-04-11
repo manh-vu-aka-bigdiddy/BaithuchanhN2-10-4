@@ -28,7 +28,7 @@ React Hooks (useState, useEffect)
 Local Storage (Web)
 #Hướng dẫn chạy ứng dụng
 1. Clone repo
-git clone https://github.com/your-username/your-repo.git
+git clone 
 cd your-repo
 2. Cài dependencies
 npm install
@@ -39,6 +39,7 @@ Quét QR bằng Expo Go (Android/iOS)
 Hoặc chạy trên web:
 w
  Ảnh demo
+
 
 
 <img width="1920" height="1020" alt="23810310375-vu-tien-manh-login" src="https://github.com/user-attachments/assets/55c55a35-ce1b-4156-aac1-cac866ff2104" />
