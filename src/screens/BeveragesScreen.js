@@ -9,8 +9,11 @@ import {
   View,
 } from 'react-native';
 
+import ProductCard from '../components/ProductCard';
+import { beverages, nectarTheme } from '../data/nectarData';
+import { scale } from '../utils/layout';
 
-
+export default function BeveragesScreen({
   onBack,
   onOpenProductDetail,
   onAddProduct,
