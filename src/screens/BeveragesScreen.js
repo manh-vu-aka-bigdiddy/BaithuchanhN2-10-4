@@ -11,7 +11,6 @@ import {
 
 
 
-export default function BeveragesScreen({
   onBack,
   onOpenProductDetail,
   onAddProduct,
